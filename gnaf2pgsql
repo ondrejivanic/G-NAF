@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import glob
+import os
+
+print 'drop schema if exists staging cascade;'
+print 'create schema staging;'
+
+for fn in glob.glob('./source/*/*/*/*/*.psv'):
+  table = os.path.basename(fn).lower()
+  table = table[:table.index('_psv.psv')]
+
+  with open(fn, 'r') as f:
+    header = f.readline().strip().lower().split('|')
+    col_list = ', '.join([col + ' text' for col in header])
+
+    print "drop table if exists staging.{};".format(table)
+    print "create table staging.{} ({});".format(table, col_list)
+    print "\copy staging.{} from '{}' with null '' delimiter '|' csv header;".format(table, fn)
