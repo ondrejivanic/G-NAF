@@ -1,6 +1,34 @@
 # G-NAF
 Geocoded National Address File is Australia’s authoritative, geocoded address file. This repo has a few tools / scripts to create derived datasets
 
+# Prerequisites
+
+Working PostgreSQL instalation
+
+# Import data
+
+- Create `source` directory
+
+```
+mkdir source
+```
+
+- Unzip `FEB16_GNAF+EULA_PipeSeparatedValue_20160222170142.zip` into `source` directory
+
+- Import `*.psv`
+
+```
+./gnaf2pgsql | psql
+```
+
+- Merge state data and create flat table
+
+```
+psql -f g-naf.sql
+```
+
+Last step creates `address_detail_flat` table in `public` schema and `staging` schema has all merged tables and authority code tables 
+
 # Address Flat Table
 
 This table has all addreses (as in `address_detail` table) and contains addtional information. Appendix B in G-NAF documentation decribes G-NAF data model in detail.
